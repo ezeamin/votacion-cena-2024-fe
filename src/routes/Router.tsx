@@ -11,10 +11,10 @@ const Router = () => {
       <Routes>
         <Route path="/" element={<HomeView />} />
         <Route path="/general" element={<GeneralVoteView />}>
-          <Route path="/king" element={<ListVoteView type="king" />} />
-          <Route path="/queen" element={<ListVoteView type="queen" />} />
-          <Route path="/finish" element={<FinishVoteView />} />
-          <Route path="/results" element={<ResultsView />} />
+          <Route path="king" element={<ListVoteView type="king" />} />
+          <Route path="queen" element={<ListVoteView type="queen" />} />
+          <Route path="finish" element={<FinishVoteView />} />
+          <Route path="results" element={<ResultsView />} />
         </Route>
       </Routes>
     </BrowserRouter>
