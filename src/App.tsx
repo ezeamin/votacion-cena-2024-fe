@@ -19,6 +19,7 @@ const initialItems: ListItem[] = [
 const App = () => {
   const [items, setItems] = useState<ListItem[]>(initialItems);
 
+
   // Function to reorder items
   const reorderItems = () => {
     setItems(
