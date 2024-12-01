@@ -1,4 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
+import { TableValue } from '@/constants/tables';
+
 import { supabase } from '@/supabaseClient';
 
 type SupabaseFetchResult<T> = {
@@ -7,7 +10,10 @@ type SupabaseFetchResult<T> = {
   loading: boolean;
 };
 
-export const useSupabaseData = <T>(table: string, selectQuery: string = '*') => {
+export const useSupabaseData = <T>(
+  table: TableValue,
+  selectQuery: string = '*'
+) => {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
