@@ -1,23 +1,11 @@
-import { useEffect, useState } from 'react';
-
-import { getAllEmployees } from '@/api/employeeApi';
-
-import { Employee } from '@/types/Employee';
+import EmployeeLIst from "@/components/EmployeeLIst";
 
 const HomeView = () => {
-  const [employees, setEmployees] = useState<Employee[] | []>([]);
-  console.log('🌭 ~ HomeView ~ employees:', employees);
-
-  useEffect(() => {
-    const fetchEmployees = async () => {
-      const employeesData = await getAllEmployees();
-
-      if (employeesData.length > 0) setEmployees(employeesData);
-    };
-
-    fetchEmployees();
-  }, []);
-
-  return <div>HomeView</div>;
+  return (
+    <div>
+      <h1>HomeView</h1>
+      <EmployeeLIst />
+    </div>
+  );
 };
 export default HomeView;
