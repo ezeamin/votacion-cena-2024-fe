@@ -10,7 +10,7 @@ const RootView = () => {
   const { hasAccepted, hasRejected, isNear } = useGPS(true);
 
   return (
-    <main className="px-4 py-2 md:px-16">
+    <main className="px-6 py-4 md:px-16">
       <Toaster richColors position="top-center" />
       <LoadingBackdrop />
       <GPSModal

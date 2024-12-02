@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 
 const GeneralVoteView = () => {
   const connected = 0;
-  const [votingEnabled, setVotingEnabled] = useState(false);
+  const [votingEnabled, setVotingEnabled] = useState(true);
 
   const navigate = useNavigate();
 
