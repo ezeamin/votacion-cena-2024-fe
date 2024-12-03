@@ -1,4 +1,4 @@
 const ResultsView = () => {
-  return <div>ResultsView</div>;
+  return <div>Results</div>;
 };
 export default ResultsView;
