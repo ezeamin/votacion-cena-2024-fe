@@ -12,7 +12,7 @@ const Timer = (props: Props) => {
 
   const { onSocket } = useSocket();
 
-  const [timer, setTimer] = useState('01:00');
+  const [timer, setTimer] = useState('03:00');
 
   useEffect(() => {
     // Update the timer locally every second
@@ -26,7 +26,7 @@ const Timer = (props: Props) => {
 
         if (totalSeconds < 0) {
           clearInterval(intervalId);
-          return '';
+          return '00:00';
         }
 
         const newMinutes = Math.floor(totalSeconds / 60);
@@ -68,12 +68,21 @@ const Timer = (props: Props) => {
   if (title)
     return (
       <p
-        className={`relative z-20 text-center text-sm ${littleTime ? 'text-red-300 animate-pulse' : ''}`}
+        className={`relative z-20 text-center text-sm ${littleTime ? 'animate-pulse text-red-300' : ''}`}
       >
         {timer}
       </p>
     );
 
-  return <p className="">{timer}</p>;
+  return (
+    <div className="text-center">
+      <p>Tiempo restante</p>
+      <p
+        className={`text-3xl md:text-5xl ${littleTime ? 'animate-pulse text-red-300' : ''}`}
+      >
+        {timer}
+      </p>
+    </div>
+  );
 };
 export default Timer;
