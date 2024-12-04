@@ -6,6 +6,7 @@ import { Info } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 
 const GeneralVoteView = () => {
+  // TODO: Get this from socket
   const connected = 0;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO when EPs are implemented
   const [votingEnabled, setVotingEnabled] = useState(true);
@@ -24,7 +25,12 @@ const GeneralVoteView = () => {
   return (
     <section className="flex min-h-[calc(100vh_-_35px)] flex-col items-center justify-center text-center">
       <h1 className="text-3xl font-bold">Votación Sistemas 2024</h1>
-      <p className="mt-5">Conectados: {connected}</p>
+      <p className="mt-5">
+        Conectados:{' '}
+        <span className="countdown">
+          <span style={{ '--value': connected } as object}></span>
+        </span>
+      </p>
       {isDupped ? (
         <>
           <Alert className="mt-16 text-lg">No podes volver a votar 👮🏼‍♂️</Alert>
