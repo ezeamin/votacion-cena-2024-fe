@@ -1,5 +1,4 @@
-import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import ResultItem from './ResultItem';
 
 import { PersonWithVotes } from '@/types';
 
@@ -12,6 +11,8 @@ type Props = {
 const ResultList = (props: Props) => {
   const { type, data, className } = props;
 
+  const hasTie = data.length > 1 && data[0].votes === data[1].votes;
+
   return (
     <section className={className}>
       <h2 className="mb-4 text-center text-lg">
@@ -19,22 +20,13 @@ const ResultList = (props: Props) => {
       </h2>
       <div className="w-full space-y-2">
         {data.slice(0, 5).map((item, index) => (
-          <motion.div
+          <ResultItem
+            hasTie={hasTie}
             key={item.id}
-            layout
-            className={cn(
-              'w-full rounded-lg bg-white p-3 text-center text-gray-800 shadow',
-              index === 0
-                ? `animate-bounce ${type === 'king' ? 'bg-blue-200' : 'bg-pink-200'} font-bold`
-                : ''
-            )}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-          >
-            {index === 0 ? '👑 ' : ''}
-            {`${item.name} - ${item.votes}`}
-          </motion.div>
+            item={item}
+            index={index}
+            type={type}
+          />
         ))}
       </div>
     </section>
