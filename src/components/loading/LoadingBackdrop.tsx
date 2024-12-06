@@ -28,7 +28,7 @@ const LoadingBackdrop = () => {
     <div
       className={`h-screen w-screen ${
         open ? 'block' : 'hidden'
-      } items-center fixed left-0 top-0 z-[99999999] flex justify-center bg-black bg-opacity-60`}
+      } fixed left-0 top-0 z-[99999999] flex items-center justify-center bg-black bg-opacity-60`}
     >
       <div className="flex flex-col items-center justify-center">
         <Spinner />

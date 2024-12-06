@@ -21,7 +21,14 @@ const useGetSelected = (props: Props) => {
     enabled: !queenId,
   });
 
-  if (!kingList || !queenList || isErrorKing || isErrorQueen || !kingId || !queenId) {
+  if (
+    !kingList ||
+    !queenList ||
+    isErrorKing ||
+    isErrorQueen ||
+    !kingId ||
+    !queenId
+  ) {
     return { king: null, queen: null };
   }
 

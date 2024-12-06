@@ -34,7 +34,6 @@ const ResultList = (props: Props) => {
           >
             {index === 0 ? '👑 ' : ''}
             {`${item.name} - ${item.votes}`}
-            
           </motion.div>
         ))}
       </div>

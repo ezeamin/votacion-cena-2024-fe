@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import Alert from '@/components/alert/Alert';
 import ConfirmModal from '@/components/voting/ConfirmModal';
 import PersonOption from '@/components/voting/PersonOption';
+import Timer from '@/components/voting/Timer';
 
 import { fetchPeople } from '@/api/api';
 import { useQuery } from '@tanstack/react-query';
@@ -10,7 +11,6 @@ import { Link, useNavigate, useSearchParams } from 'react-router';
 import { toast } from 'sonner';
 
 import { Person } from '@/types';
-import Timer from '@/components/voting/Timer';
 
 type Props = {
   type: 'king' | 'queen';
@@ -67,7 +67,7 @@ const ListVoteView = (props: Props) => {
         <h1 className="relative z-20 text-center text-[1.6rem]">
           Votación para {type === 'king' ? 'Rey 🤴🏼' : 'Reina 👸🏼'}
         </h1>
-        <Timer title/>
+        <Timer title />
       </div>
       <form className="mt-20" onSubmit={handleSubmit}>
         {isError && (
