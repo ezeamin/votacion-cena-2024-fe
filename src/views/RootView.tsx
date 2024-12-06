@@ -4,11 +4,15 @@ import useToken from '@/hooks/useToken';
 import GPSModal from '@/components/GPSModal';
 import LoadingBackdrop from '@/components/loading/LoadingBackdrop';
 
-import { Outlet } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
 import { Toaster } from 'sonner';
 
 const RootView = () => {
-  const { hasAccepted, hasRejected, isNear } = useGPS();
+  const { pathname } = useLocation();
+
+  const { hasAccepted, hasRejected, isNear } = useGPS(
+    pathname.includes('results')
+  );
 
   useToken();
 
