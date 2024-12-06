@@ -8,6 +8,7 @@ import ResultList from '@/components/results/ResultList';
 import VotingCount from '@/components/results/VotingCount';
 import Timer from '@/components/voting/Timer';
 
+import { useLoading } from '@/stores/useLoading';
 import { useSocket } from '@/stores/useSocket';
 
 import { PersonWithVotes } from '@/types';
@@ -15,6 +16,8 @@ import { PersonWithVotes } from '@/types';
 const ResultsView = () => {
   const [kings, setKings] = useState<PersonWithVotes[]>([]);
   const [queens, setQueens] = useState<PersonWithVotes[]>([]);
+
+  const { setIsLoading } = useLoading();
 
   const { onSocket, emitSocket } = useSocket();
 
@@ -26,22 +29,40 @@ const ResultsView = () => {
   );
 
   useEffect(() => {
-    emitSocket('getVotes', {});
-
     onSocket('updateVotes', (apiData: unknown) => {
+      setIsLoading(false);
+
       const data = apiData as PersonWithVotes[];
 
       const kings = data
         .filter((item) => item.type === 'king')
-        .sort((a, b) => b.votes - a.votes);
+        .sort((a, b) => {
+          if (b.votes === a.votes) {
+            return a.lastname.localeCompare(b.lastname);
+          }
+          return b.votes - a.votes;
+        });
       const queens = data
         .filter((item) => item.type === 'queen')
-        .sort((a, b) => b.votes - a.votes);
+        .sort((a, b) => {
+          if (b.votes === a.votes) {
+            return a.lastname.localeCompare(b.lastname);
+          }
+          return b.votes - a.votes;
+        });
 
       setKings(kings);
       setQueens(queens);
     });
-  }, [onSocket, emitSocket]);
+  }, [onSocket, emitSocket, setIsLoading]);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    setTimeout(() => {
+      emitSocket('getVotes', {});
+    }, 1000);
+  }, [emitSocket, setIsLoading]);
 
   return (
     <section className="flex flex-col justify-center md:min-h-[calc(100vh_-_40px)]">

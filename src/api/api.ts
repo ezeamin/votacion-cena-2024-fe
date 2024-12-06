@@ -14,14 +14,15 @@ export const fetchPeople = async ({
   return response.json();
 };
 
-export const hasVoted = async (): Promise<boolean> => {
+export const hasVoted = async (): Promise<{ hasVoted: boolean }> => {
   const token = localStorage.getItem('token');
 
   if (!token) {
-    return false;
+    return { hasVoted: false };
   }
 
   const response = await fetch(`${BACK_URL}/votes/hasVoted?token=${token}`);
+  const data = await response.json();
 
-  return response.ok;
+  return data;
 };

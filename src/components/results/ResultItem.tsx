@@ -4,16 +4,16 @@ import { motion } from 'framer-motion';
 import { PersonWithVotes } from '@/types';
 
 type Props = {
-  hasTie: boolean;
+  tiededVotes: number[];
   item: PersonWithVotes;
   index: number;
   type: 'king' | 'queen';
 };
 
 const ResultItem = (props: Props) => {
-  const { hasTie, item, index, type } = props;
+  const { tiededVotes, item, index, type } = props;
 
-  const highlight = (hasTie && index === 1) || index === 0;
+  const highlight = tiededVotes.includes(index) || index === 0;
 
   return (
     <motion.div
@@ -29,7 +29,7 @@ const ResultItem = (props: Props) => {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.8 }}
     >
-      {index === 0 ? '👑 ' : ''}
+      {highlight ? '👑 ' : ''}
       {`${item.name} - ${item.votes}`}
     </motion.div>
   );

@@ -1,26 +1,27 @@
 import { useEffect, useState } from 'react';
 
-import Alert from '@/components/alert/Alert';
+import StartVotingButton from '@/components/general/StartVotingButton';
 
+import { hasVoted } from '@/api/api';
 import { useSocket } from '@/stores/useSocket';
-import { Info } from 'lucide-react';
-import { Link, useNavigate, useSearchParams } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router';
 
 const GeneralVoteView = () => {
   const [connected, setConnected] = useState(0);
   const [votingEnabled, setVotingEnabled] = useState(false);
   const { onSocket, emitSocket } = useSocket();
 
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const isDupped = !!searchParams.get('dupped');
+  const [isDupped, setIsDupped] = useState<boolean>(
+    !!searchParams.get('dupped')
+  );
 
-  const handleClick = () => {
-    if (!votingEnabled) return;
-
-    navigate('/general/king');
-  };
+  const { data: hasVotedData, isLoading: isLoadingHasVoted } = useQuery({
+    queryKey: ['hasVoted'],
+    queryFn: hasVoted,
+  });
 
   useEffect(() => {
     emitSocket('getUsers', {});
@@ -36,6 +37,15 @@ const GeneralVoteView = () => {
     });
   }, [onSocket, emitSocket]);
 
+  useEffect(() => {
+    if (isDupped) return;
+
+    if (hasVotedData) {
+      emitSocket('getUsers', {});
+      setIsDupped(hasVotedData.hasVoted);
+    }
+  }, [hasVotedData, emitSocket, isDupped]);
+
   return (
     <section className="flex min-h-[calc(100vh_-_35px)] flex-col items-center justify-center text-center">
       <h1 className="px-1 text-3xl font-bold">Votación Sistemas 2024</h1>
@@ -45,34 +55,11 @@ const GeneralVoteView = () => {
           <span style={{ '--value': connected } as object}></span>
         </span>
       </p>
-      {isDupped ? (
-        <>
-          <Alert className="mt-16 text-lg">No podes volver a votar 👮🏼‍♂️</Alert>
-          <Link
-            to="/general/results"
-            className="btn btn-primary mt-5 text-lg uppercase text-white"
-          >
-            Ver resultados
-          </Link>
-        </>
-      ) : (
-        <>
-          <button
-            disabled={!votingEnabled}
-            type="button"
-            className="btn btn-primary mt-10 text-lg uppercase text-white"
-            onClick={handleClick}
-          >
-            Iniciar
-          </button>
-          {!votingEnabled && (
-            <p className="mt-3 flex animate-pulse items-center text-xs">
-              <Info className="mr-1 w-4" />
-              Esperá. Pronto habilitaremos la votación.
-            </p>
-          )}
-        </>
-      )}
+      <StartVotingButton
+        isLoadingHasVoted={isLoadingHasVoted}
+        isDupped={isDupped}
+        votingEnabled={votingEnabled}
+      />
       <div className="mt-52 rounded-md bg-black/50 px-5 py-2 text-sm">
         <p>¿Querés sumar chances?</p>
         <p>¡100 ARS = 1 Chance!</p>

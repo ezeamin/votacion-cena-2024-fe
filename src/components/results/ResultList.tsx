@@ -11,7 +11,12 @@ type Props = {
 const ResultList = (props: Props) => {
   const { type, data, className } = props;
 
-  const hasTie = data.length > 1 && data[0].votes === data[1].votes;
+  const tiededVotes = data.reduce<number[]>((acc, person, index, arr) => {
+    if (index > 0 && person.votes === arr[0].votes) {
+      acc.push(index);
+    }
+    return acc;
+  }, []);
 
   return (
     <section className={className}>
@@ -21,7 +26,7 @@ const ResultList = (props: Props) => {
       <div className="w-full space-y-2">
         {data.slice(0, 5).map((item, index) => (
           <ResultItem
-            hasTie={hasTie}
+            tiededVotes={tiededVotes}
             key={item.id}
             item={item}
             index={index}

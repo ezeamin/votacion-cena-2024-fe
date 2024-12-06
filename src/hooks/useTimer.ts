@@ -15,20 +15,19 @@ const useTimer = () => {
   useEffect(() => {
     onSocket('timerFinished', () => {
       setTimesUp(true);
+
+      toast.info('El contador ha finalizado!');
+
       if (
-        pathname !== '/timeout' &&
         pathname !== '/general' &&
-        pathname !== '/general/results'
+        !pathname.includes('results') &&
+        !pathname.includes('timeout')
       )
         navigate('/general/timeout');
     });
 
     onSocket('timer', () => {
       setTimesUp(false);
-    });
-
-    onSocket('timerFinished', () => {
-      toast.info('El contador ha finalizado!');
     });
   }, [navigate, onSocket, pathname, setTimesUp]);
 };

@@ -40,6 +40,9 @@ const ListVoteView = (props: Props) => {
     if (type === 'king') {
       setSelectedPerson(null);
       navigate(`/general/queen?king=${selectedPerson}`);
+      setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      }, 100);
       return;
     }
 
