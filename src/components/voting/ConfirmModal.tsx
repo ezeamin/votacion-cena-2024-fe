@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import useGetSelected from '@/hooks/useGetSelected';
 
-import { postVote } from '@/api/api';
-import { useMutation } from '@tanstack/react-query';
+import { useSocket } from '@/stores/useSocket';
 import { Send } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
@@ -22,16 +21,20 @@ const ConfirmModal = (props: Props) => {
 
   const { king, queen } = useGetSelected({ kingId, queenId });
   const navigate = useNavigate();
+  const { emitSocket, onSocket } = useSocket();
 
-  const { mutate: vote } = useMutation({
-    mutationFn: postVote,
-    onSuccess: () => {
+  useEffect(() => {
+    onSocket('success', () => {
       setModalOpened(false);
       navigate('/general/finish');
-    },
-    onError: (error) => {
+    });
+
+    onSocket('error', (apiData) => {
+      const data = apiData as string;
+      const isDupped = data === 'Token ya utilizado';
+
       toast.error(
-        error.message === 'dupped'
+        isDupped
           ? 'Emm... Ya votaste, no podés volver a hacerlo!!1! 👮🏼‍♂️'
           : 'Ocurrió un error al registrar la votación. Te redireccionamos a inicio para que intentes nuevamente. Culpá a Infra 🤷🏼‍♂️',
         {
@@ -40,9 +43,9 @@ const ConfirmModal = (props: Props) => {
       );
       setIsLoading(false);
       setModalOpened(false);
-      navigate(`/general${error.message === 'dupped' ? '?dupped=true' : ''}`);
-    },
-  });
+      window.location.assign(`/general${isDupped ? '?dupped=true' : ''}`);
+    });
+  }, [onSocket, navigate, setModalOpened]);
 
   if (kingId && queenId && (!king || !queen)) {
     toast.error(
@@ -57,12 +60,18 @@ const ConfirmModal = (props: Props) => {
 
   const handleBack = () => {
     setModalOpened(false);
-    navigate('/general');
+    window.location.assign('/general');
   };
 
   const handleFinish = async () => {
     setIsLoading(true);
-    vote({ kingId: kingId.toString(), queenId: queenId.toString() });
+
+    const token = localStorage.getItem('token');
+    emitSocket('newVote', {
+      king_id: kingId.toString(),
+      queen_id: queenId.toString(),
+      token,
+    });
   };
 
   return (
@@ -85,10 +94,16 @@ const ConfirmModal = (props: Props) => {
         ) : (
           <>
             <p className="pb-1 pt-4">
-              🤴🏼 Rey: <strong>{king.name} </strong>
+              🤴🏼 Rey:{' '}
+              <strong>
+                {king.lastname} {king.name}
+              </strong>
             </p>
             <p className="pb-5">
-              👸🏼 Reina: <strong>{queen.name}</strong>
+              👸🏼 Reina:{' '}
+              <strong>
+                {queen.lastname} {queen.name}
+              </strong>
             </p>
             <button
               type="button"

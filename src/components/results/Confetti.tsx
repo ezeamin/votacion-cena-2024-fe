@@ -1,11 +1,10 @@
-import useTimer from '@/hooks/useTimer';
-
+import { useTimerStatus } from '@/stores/useTimerStatus';
 import ReactConfetti from 'react-confetti';
 
 const { width, height } = window.screen;
 
 const Confetti = () => {
-  const timesUp = useTimer();
+  const { timesUp } = useTimerStatus();
 
   (document.querySelector('html') as HTMLHtmlElement).classList.add(
     'md:overflow-hidden'

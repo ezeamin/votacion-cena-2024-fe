@@ -3,9 +3,13 @@ import { useEffect, useState } from 'react';
 import { calculateDistance } from '@/lib/utils';
 
 const TARGET_LOCATION = {
-  latitude: -26.8072702,
-  longitude: -65.3210582,
+  latitude: -26.830519,
+  longitude: -65.205262,
 };
+// const TARGET_LOCATION = {
+//   latitude: -26.8072702,
+//   longitude: -65.3210582,
+// };
 
 const RADIUS_IN_KM = 1.5;
 

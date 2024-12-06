@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
 import { useSocket } from '@/stores/useSocket';
-import { toast } from 'sonner';
 
 type Props = {
   title?: boolean;
@@ -12,37 +11,16 @@ const Timer = (props: Props) => {
 
   const { onSocket } = useSocket();
 
-  const [timer, setTimer] = useState('03:00');
+  const [timer, setTimer] = useState('');
 
   useEffect(() => {
-    // Update the timer locally every second
-    const intervalId = setInterval(() => {
-      setTimer((prevTimer) => {
-        if (prevTimer === '') return '';
-
-        const [minutes, seconds] = prevTimer.split(':');
-        let totalSeconds = parseInt(minutes, 10) * 60 + parseInt(seconds, 10);
-        totalSeconds -= 1;
-
-        if (totalSeconds < 0) {
-          clearInterval(intervalId);
-          return '00:00';
-        }
-
-        const newMinutes = Math.floor(totalSeconds / 60);
-        const newSeconds = totalSeconds - newMinutes * 60;
-
-        return `${String(newMinutes).padStart(2, '0')}:${String(
-          newSeconds
-        ).padStart(2, '0')}`;
-      });
-    }, 1000);
-
     // Listen for timer updates from the backend via WebSocket
     onSocket('timer', (apiData: unknown) => {
-      if (typeof apiData === 'number') {
-        const minutes = Math.floor(apiData / 60);
-        const seconds = apiData - minutes * 60;
+      const time = apiData as { timer: number };
+
+      if (typeof time.timer === 'number') {
+        const minutes = Math.floor(time.timer / 60);
+        const seconds = time.timer - minutes * 60;
 
         setTimer(
           `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(
@@ -53,14 +31,9 @@ const Timer = (props: Props) => {
       }
     });
 
-    onSocket('timer finished', () => {
-      toast.info('El contador ha finalizado!');
+    onSocket('timerFinished', () => {
       setTimer('');
     });
-
-    return () => {
-      clearInterval(intervalId);
-    };
   }, [onSocket, setTimer]);
 
   const littleTime = timer.at(1) === '0' && Number(timer.at(3)) < 3;
@@ -70,7 +43,7 @@ const Timer = (props: Props) => {
       <p
         className={`relative z-20 text-center text-sm ${littleTime ? 'animate-pulse text-red-300' : ''}`}
       >
-        {timer}
+        {timer === '' ? '00:00' : timer}
       </p>
     );
 
@@ -80,7 +53,7 @@ const Timer = (props: Props) => {
       <p
         className={`text-3xl md:text-5xl ${littleTime ? 'animate-pulse text-red-300' : ''}`}
       >
-        {timer}
+        {timer === '' ? '00:00' : timer}
       </p>
     </div>
   );

@@ -1,13 +1,14 @@
-import useTimer from '@/hooks/useTimer';
+import { useEffect } from 'react';
 
-import { Link, useNavigate } from 'react-router';
+import { useTimerStatus } from '@/stores/useTimerStatus';
+import { Link } from 'react-router';
 
 const TimeoutView = () => {
-  const timesUp = useTimer();
+  const { timesUp } = useTimerStatus();
 
-  const navigate = useNavigate();
-
-  if (!timesUp) navigate('/general');
+  useEffect(() => {
+    if (!timesUp) window.location.assign('/general');
+  }, [timesUp]);
 
   return (
     <section className="flex min-h-[calc(100vh_-_35px)] flex-col items-center justify-center text-center">

@@ -1,15 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Alert from '@/components/alert/Alert';
 
+import { useSocket } from '@/stores/useSocket';
 import { Info } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 
 const GeneralVoteView = () => {
-  // TODO: Get this from socket
-  const connected = 0;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO when EPs are implemented
-  const [votingEnabled, setVotingEnabled] = useState(true);
+  const [connected, setConnected] = useState(0);
+  const [votingEnabled, setVotingEnabled] = useState(false);
+  const { onSocket, emitSocket } = useSocket();
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -21,6 +21,20 @@ const GeneralVoteView = () => {
 
     navigate('/general/king');
   };
+
+  useEffect(() => {
+    emitSocket('getUsers', {});
+
+    onSocket('updateUsers', (apiData: unknown) => {
+      const data = apiData as {
+        connectedUsers: number;
+        isVotingEnabled: boolean;
+      };
+
+      setVotingEnabled(data.isVotingEnabled);
+      setConnected(data.connectedUsers);
+    });
+  }, [onSocket, emitSocket]);
 
   return (
     <section className="flex min-h-[calc(100vh_-_35px)] flex-col items-center justify-center text-center">

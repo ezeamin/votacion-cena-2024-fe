@@ -1,23 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { useSocket } from '@/stores/useSocket';
+import { useTimerStatus } from '@/stores/useTimerStatus';
 import { useLocation, useNavigate } from 'react-router';
+import { toast } from 'sonner';
 
 const useTimer = () => {
-  const [timesUp, setTimesUp] = useState(false);
-
   const { onSocket } = useSocket();
+  const { setTimesUp } = useTimerStatus();
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
   useEffect(() => {
-    onSocket('timer finished', () => {
+    onSocket('timerFinished', () => {
       setTimesUp(true);
-      if (pathname !== 'timeout') navigate('/timeout');
+      if (pathname !== '/timeout' && pathname !== '/general')
+        navigate('/general/timeout');
     });
-  }, [navigate, onSocket, pathname]);
 
-  return timesUp;
+    onSocket('timer', () => {
+      setTimesUp(false);
+    });
+
+    onSocket('timerFinished', () => {
+      toast.info('El contador ha finalizado!');
+    });
+  }, [navigate, onSocket, pathname, setTimesUp]);
 };
+
 export default useTimer;

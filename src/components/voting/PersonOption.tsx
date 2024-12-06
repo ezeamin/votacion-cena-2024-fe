@@ -22,7 +22,9 @@ const PersonOption = (props: Props) => {
           className="radio checked:bg-[#7480ff]"
           onClick={() => setSelectedPerson(person.id)}
         />
-        <span>{person.name}</span>
+        <span>
+          {person.lastname} {person.name}
+        </span>
       </label>
     </div>
   );
