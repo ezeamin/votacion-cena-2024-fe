@@ -8,7 +8,7 @@ import { Outlet } from 'react-router';
 import { Toaster } from 'sonner';
 
 const RootView = () => {
-  const { hasAccepted, hasRejected, isNear } = useGPS();
+  const { hasAccepted, hasRejected, isNear } = useGPS(true);
 
   useToken();
 

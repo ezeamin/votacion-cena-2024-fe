@@ -1,1 +1,1 @@
-export const TOTAL_PARTICIPANTS = 100;
+export const TOTAL_PARTICIPANTS = 96;
