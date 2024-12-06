@@ -8,4 +8,5 @@ export type Person = {
 
 export type PersonWithVotes = Person & {
   votes: number;
+  type: 'king' | 'queen';
 };

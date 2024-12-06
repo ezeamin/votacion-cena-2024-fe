@@ -35,6 +35,10 @@ const AdminView = () => {
       setIsVotingEnabled(data.isVotingEnabled);
       setConnectedUsers(data.connectedUsers);
     });
+
+    onSocket('timerFinished', () => {
+      setIsVotingEnabled(false);
+    });
   }, [onSocket, setIsLoading]);
 
   return (

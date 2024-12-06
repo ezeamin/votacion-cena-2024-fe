@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
+import Alert from '@/components/alert/Alert';
 import Grid from '@/components/grid/Grid';
 import Chayanne from '@/components/results/Chayanne';
 import Confetti from '@/components/results/Confetti';
@@ -7,40 +8,40 @@ import ResultList from '@/components/results/ResultList';
 import VotingCount from '@/components/results/VotingCount';
 import Timer from '@/components/voting/Timer';
 
+import { useSocket } from '@/stores/useSocket';
+
 import { PersonWithVotes } from '@/types';
 
-const items: PersonWithVotes[] = [
-  { id: '1', name: 'Ezequiel Amin', votes: 10 },
-  { id: '2', name: 'Juan Perez', votes: 10 },
-  { id: '3', name: 'Pedro Gomez', votes: 10 },
-  { id: '4', name: 'Maria Rodriguez', votes: 10 },
-  { id: '5', name: 'Ana Fernandez', votes: 10 },
-  { id: '6', name: 'Carlos Gonzalez', votes: 8 },
-  { id: '7', name: 'Jose Lopez', votes: 10 },
-  { id: '8', name: 'Lucia Martinez', votes: 10 },
-  { id: '9', name: 'Fernando Sanchez', votes: 10 },
-  { id: '10', name: 'Sofia Ramirez', votes: 10 },
-];
-
 const ResultsView = () => {
-  const [data, setData] = useState<PersonWithVotes[]>(items);
+  const [kings, setKings] = useState<PersonWithVotes[]>([]);
+  const [queens, setQueens] = useState<PersonWithVotes[]>([]);
 
-  // Function to reorder items
-  const reorderItems = () => {
-    setData((prevItems) =>
-      [...prevItems]
-        .sort(() => Math.random() - 0.5)
-        .map((item) => ({
-          ...item,
-          votes: Math.round(Math.random() * 10),
-        }))
-    );
-  };
+  const { onSocket, emitSocket } = useSocket();
 
   const totalVotes = useMemo(
-    () => data.reduce((acc, item) => acc + item.votes, 0),
-    [data]
+    () =>
+      kings.reduce((acc, item) => acc + item.votes, 0) +
+      queens.reduce((acc, item) => acc + item.votes, 0),
+    [kings, queens]
   );
+
+  useEffect(() => {
+    emitSocket('getVotes', {});
+
+    onSocket('updateVotes', (apiData: unknown) => {
+      const data = apiData as PersonWithVotes[];
+
+      const kings = data
+        .filter((item) => item.type === 'king')
+        .sort((a, b) => b.votes - a.votes);
+      const queens = data
+        .filter((item) => item.type === 'queen')
+        .sort((a, b) => b.votes - a.votes);
+
+      setKings(kings);
+      setQueens(queens);
+    });
+  }, [onSocket, emitSocket]);
 
   return (
     <section className="flex flex-col justify-center md:min-h-[calc(100vh_-_40px)]">
@@ -55,21 +56,18 @@ const ResultsView = () => {
           <VotingCount totalVotes={totalVotes} />
         </Grid>
       </Grid>
-      <Grid container gap={4}>
-        <Grid item md={6} xs={12}>
-          <ResultList type="king" data={data} />
+      {kings.length === 0 && queens.length === 0 ? (
+        <Alert>No se registraron votos aún 👀</Alert>
+      ) : (
+        <Grid container gap={4}>
+          <Grid item md={6} xs={12}>
+            <ResultList type="king" data={kings} />
+          </Grid>
+          <Grid item md={6} xs={12}>
+            <ResultList className="mt-10 md:mt-0" type="queen" data={queens} />
+          </Grid>
         </Grid>
-        <Grid item md={6} xs={12}>
-          <ResultList
-            className="mt-10 md:mt-0"
-            type="queen"
-            data={[...data].sort(() => Math.random() - 0.5)}
-          />
-        </Grid>
-      </Grid>
-      <button className="btn btn-primary mt-10 w-full" onClick={reorderItems}>
-        Reorder
-      </button>
+      )}
       <Confetti />
       <Chayanne />
     </section>

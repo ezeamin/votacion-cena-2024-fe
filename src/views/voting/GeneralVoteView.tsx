@@ -38,7 +38,7 @@ const GeneralVoteView = () => {
 
   return (
     <section className="flex min-h-[calc(100vh_-_35px)] flex-col items-center justify-center text-center">
-      <h1 className="text-3xl font-bold">Votación Sistemas 2024</h1>
+      <h1 className="text-3xl font-bold px-1">Votación Sistemas 2024</h1>
       <p className="mt-5">
         Conectados:{' '}
         <span className="countdown">

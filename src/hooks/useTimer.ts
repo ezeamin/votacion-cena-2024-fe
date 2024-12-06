@@ -15,7 +15,11 @@ const useTimer = () => {
   useEffect(() => {
     onSocket('timerFinished', () => {
       setTimesUp(true);
-      if (pathname !== '/timeout' && pathname !== '/general')
+      if (
+        pathname !== '/timeout' &&
+        pathname !== '/general' &&
+        pathname !== '/general/results'
+      )
         navigate('/general/timeout');
     });
 

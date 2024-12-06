@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Alert from '@/components/alert/Alert';
 import ConfirmModal from '@/components/voting/ConfirmModal';
