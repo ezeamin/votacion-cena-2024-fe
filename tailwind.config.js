@@ -9,4 +9,7 @@ export default {
     extend: {},
   },
   plugins: [daisyui, containerQueries],
+  daisyui: {
+    themes: ["dark"],
+  }
 };
